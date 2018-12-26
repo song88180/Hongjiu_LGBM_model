@@ -1,5 +1,6 @@
 __all__ = ('ROOT', 'BASES', 'GROUPS', 'REPLICA_COUNT', 'SEQUENCE_LENGTH',
-           'path', 'load', 'load_sequence', 'average_fitness')
+           'path', 'load', 'load_sequence', 'average_fitness',
+           'predefined_cross_validation')
 
 import pathlib
 
@@ -50,3 +51,17 @@ def load_sequence(group, one_hot=True):
 
 def average_fitness(array):
     return array.mean(axis=1)
+
+
+def predefined_cross_validation():
+    file = tables.open_file(path(1) / '00.cv.h5', 'r')
+    folds = file.get_node('/', 'cv_train').read()
+    for train_idx in folds:
+        yield train_idx
+
+
+def stacking_splits():
+    file = tables.open_file(path(1) / '01.stack.h5', 'r')
+    folds = file.get_node('/', 'stack_train').read()
+    for train_idx in folds:
+        yield train_idx
